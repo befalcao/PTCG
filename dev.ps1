@@ -2,7 +2,7 @@ param(
   [string]$ApiKey = ""
 )
 
-$proxyCommand = "node proxy.js"
+$proxyCommand = "python proxy.py"
 if ($ApiKey -ne "") {
   $proxyCommand = "`$env:POKEMON_TCG_API_KEY='$ApiKey'; " + $proxyCommand
 }

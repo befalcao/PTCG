@@ -17,14 +17,14 @@ Depois abra `http://localhost:5173` no navegador.
 Se o navegador bloquear CORS mesmo no localhost, rode o proxy local incluido:
 
 ```bash
-node proxy.js
+python proxy.py
 ```
 
 Opcional: defina a API key via variavel de ambiente:
 
 ```bash
 set POKEMON_TCG_API_KEY=SEU_TOKEN
-node proxy.js
+python proxy.py
 ```
 
 O app ja tenta usar `http://localhost:8787` automaticamente quando esta em `localhost`.
