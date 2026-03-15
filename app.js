@@ -41,6 +41,7 @@
     clearPurchase: document.getElementById("clear-purchase"),
     purchaseOutput: document.getElementById("purchase-output"),
     apiKey: document.getElementById("api-key"),
+    apiBaseUrl: document.getElementById("api-base-url"),
     aliasMap: document.getElementById("alias-map"),
     overrideMap: document.getElementById("override-map"),
     saveSettings: document.getElementById("save-settings"),
@@ -82,10 +83,12 @@
   function loadSettings() {
     const settings = readJson(SETTINGS_KEY, {
       apiKey: "",
+      apiBaseUrl: "",
       defaultQuality: "NM",
       defaultLanguage: "PTEN",
     });
     els.apiKey.value = settings.apiKey;
+    els.apiBaseUrl.value = settings.apiBaseUrl || "";
     els.defaultQuality.value = settings.defaultQuality || "NM";
     els.defaultLanguage.value = settings.defaultLanguage || "PTEN";
 
@@ -109,6 +112,7 @@
   function saveSettings() {
     const settings = {
       apiKey: els.apiKey.value.trim(),
+      apiBaseUrl: els.apiBaseUrl.value.trim(),
       defaultQuality: els.defaultQuality.value,
       defaultLanguage: els.defaultLanguage.value,
     };
@@ -343,9 +347,18 @@
     return queries;
   }
 
+  function getApiBaseUrl() {
+    const settings = readJson(SETTINGS_KEY, {});
+    if (settings.apiBaseUrl) return settings.apiBaseUrl.replace(/\/+$/, "");
+
+    // Default: direct API works in some contexts, but GitHub Pages frequently hits CORS limits.
+    return "https://api.pokemontcg.io";
+  }
+
   async function fetchCardsByQuery(query, statusEl = els.addStatus) {
     const settings = readJson(SETTINGS_KEY, {});
-    const url = `https://api.pokemontcg.io/v2/cards?q=${encodeURIComponent(query)}&pageSize=10`;
+    const base = getApiBaseUrl();
+    const url = `${base}/v2/cards?q=${encodeURIComponent(query)}&pageSize=10`;
     const headers = settings.apiKey ? { "X-Api-Key": settings.apiKey } : {};
     try {
       const response = await fetch(url, { headers });
