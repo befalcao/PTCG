@@ -6,7 +6,7 @@ import urllib.request
 
 PORT = int(os.environ.get("PORT", "8787"))
 UPSTREAM = "https://api.pokemontcg.io"
-API_KEY = os.environ.get("POKEMON_TCG_API_KEY", "")
+API_KEY = os.environ.get("POKEMON_TCG_API_KEY", "").strip("\"'")
 
 
 class ProxyHandler(http.server.BaseHTTPRequestHandler):
