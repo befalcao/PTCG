@@ -4,7 +4,8 @@ param(
 
 $proxyCommand = "python proxy.py"
 if ($ApiKey -ne "") {
-  $proxyCommand = "`$env:POKEMON_TCG_API_KEY=$ApiKey; " + $proxyCommand
+  $escaped = $ApiKey.Replace("`"", "``"" )
+  $proxyCommand = "`$env:POKEMON_TCG_API_KEY=`"$escaped`"; " + $proxyCommand
 }
 
 Start-Process powershell -ArgumentList "-NoExit", "-Command", $proxyCommand
