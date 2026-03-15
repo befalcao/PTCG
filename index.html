@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PTCG Tracker - Colecao</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="bg-grid" aria-hidden="true"></div>
+    <div class="app">
+      <header class="hero">
+        <div>
+          <h1>PTCG Tracker</h1>
+          <p>Controle sua colecao fisica, compare com decks e gere lista de compra.</p>
+        </div>
+        <div class="status">
+          <span id="online-status" class="pill">Online</span>
+          <span id="collection-stats" class="pill">0 cartas</span>
+        </div>
+      </header>
+
+      <main class="grid">
+        <section class="card">
+          <h2>Adicionar carta</h2>
+          <form id="add-card-form">
+            <div class="row">
+              <label>
+                Nome (PT/EN)
+                <input id="card-name" type="text" placeholder="Ex: Caixa Secreta / Secret Box" required />
+              </label>
+              <label>
+                Set (codigo ou nome)
+                <input id="card-set" type="text" placeholder="Ex: PRE, TWN, Temporal Forces" required />
+              </label>
+            </div>
+            <div class="row">
+              <label>
+                Numero
+                <input id="card-number" type="text" placeholder="Ex: 163/167 ou 044" required />
+              </label>
+              <label>
+                Quantidade
+                <input id="card-qty" type="number" min="1" value="1" required />
+              </label>
+            </div>
+            <div class="row">
+              <label>
+                Idioma
+                <select id="card-language">
+                  <option value="PT">PT</option>
+                  <option value="EN">EN</option>
+                </select>
+              </label>
+              <label>
+                Condicao
+                <select id="card-condition">
+                  <option value="NM">NM</option>
+                  <option value="LP">LP</option>
+                  <option value="MP">MP</option>
+                  <option value="HP">HP</option>
+                  <option value="DMG">DMG</option>
+                </select>
+              </label>
+            </div>
+            <div class="row actions">
+              <button type="submit">Adicionar</button>
+              <button type="button" id="clear-add-form" class="ghost">Limpar</button>
+            </div>
+            <div id="add-status" class="status-line"></div>
+            <div id="add-candidates" class="candidate-list"></div>
+          </form>
+        </section>
+
+        <section class="card">
+          <h2>Colecao</h2>
+          <div class="collection-toolbar">
+            <input id="collection-filter" type="text" placeholder="Filtrar por nome, set, numero..." />
+          </div>
+          <div class="table-wrap">
+            <table class="collection-table">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Set</th>
+                  <th>Numero</th>
+                  <th>Idioma</th>
+                  <th>Condicao</th>
+                  <th>Qtd</th>
+                  <th>Reg</th>
+                  <th>Acoes</th>
+                </tr>
+              </thead>
+              <tbody id="collection-body"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Deck Analyzer</h2>
+          <p class="hint">Cole a lista exportada do Pokemon TCG Live.</p>
+          <textarea id="deck-input" rows="10" placeholder="4 Professor's Research (SSH) 178"></textarea>
+          <div class="row actions">
+            <button id="analyze-deck">Analisar deck</button>
+            <button id="clear-deck" class="ghost">Limpar</button>
+          </div>
+          <div id="deck-status" class="status-line"></div>
+          <div class="split">
+            <div>
+              <h3>Tenho</h3>
+              <div id="deck-have" class="list"></div>
+            </div>
+            <div>
+              <h3>Faltam</h3>
+              <div id="deck-missing" class="list"></div>
+            </div>
+          </div>
+          <div id="deck-unresolved" class="status-line warn"></div>
+        </section>
+
+        <section class="card">
+          <h2>Lista de compra</h2>
+          <div class="row">
+            <label>
+              Qualidade padrao
+              <select id="default-quality">
+                <option value="NM">NM</option>
+                <option value="LP">LP</option>
+                <option value="MP">MP</option>
+                <option value="HP">HP</option>
+              </select>
+            </label>
+            <label>
+              Idioma padrao
+              <select id="default-language">
+                <option value="PTEN">PTEN</option>
+                <option value="PT">PT</option>
+                <option value="EN">EN</option>
+              </select>
+            </label>
+          </div>
+          <div id="purchase-table"></div>
+          <div class="row actions">
+            <button id="generate-purchase">Gerar lista</button>
+            <button id="clear-purchase" class="ghost">Limpar</button>
+          </div>
+          <textarea id="purchase-output" rows="8" placeholder="Sua lista vai aparecer aqui..."></textarea>
+        </section>
+
+        <section class="card">
+          <h2>Configuracoes</h2>
+          <p class="hint">Tudo fica salvo localmente no navegador.</p>
+          <div class="row">
+            <label>
+              API Key (opcional)
+              <input id="api-key" type="password" placeholder="X-Api-Key" />
+            </label>
+            <button id="save-settings" class="ghost">Salvar</button>
+          </div>
+          <div class="row">
+            <label class="full">
+              Aliases PT/EN (JSON)
+              <textarea id="alias-map" rows="6" spellcheck="false"></textarea>
+            </label>
+          </div>
+          <div class="row">
+            <label class="full">
+              Overrides de equivalencia (JSON)
+              <textarea id="override-map" rows="6" spellcheck="false"></textarea>
+            </label>
+          </div>
+          <div id="settings-status" class="status-line"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
