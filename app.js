@@ -371,6 +371,9 @@
     if (settings.apiBaseUrl) return settings.apiBaseUrl.replace(/\/+$/, "");
 
     // Default: direct API works in some contexts, but GitHub Pages frequently hits CORS limits.
+    if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
+      return "http://localhost:8787";
+    }
     return "https://api.pokemontcg.io";
   }
 

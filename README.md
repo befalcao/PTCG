@@ -12,6 +12,23 @@ python -m http.server 5173
 
 Depois abra `http://localhost:5173` no navegador.
 
+## Proxy local (sem conta no worker)
+
+Se o navegador bloquear CORS mesmo no localhost, rode o proxy local incluido:
+
+```bash
+node proxy.js
+```
+
+Opcional: defina a API key via variavel de ambiente:
+
+```bash
+set POKEMON_TCG_API_KEY=SEU_TOKEN
+node proxy.js
+```
+
+O app ja tenta usar `http://localhost:8787` automaticamente quando esta em `localhost`.
+
 ## GitHub Pages e CORS
 
 O navegador costuma bloquear chamadas diretas para `https://api.pokemontcg.io` quando o app esta hospedado no GitHub Pages (CORS). Para funcionar, configure um proxy CORS e aponte o app para ele em "Configuracoes" no campo `API Base URL`.
