@@ -4,7 +4,7 @@ param(
 
 $proxyCommand = "python proxy.py"
 if ($ApiKey -ne "") {
-  $escaped = $ApiKey.Replace("`"", "``"" )
+  $escaped = $ApiKey.Replace('"', '""')
   $proxyCommand = "`$env:POKEMON_TCG_API_KEY=`"$escaped`"; " + $proxyCommand
 }
 
