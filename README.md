@@ -29,6 +29,20 @@ node proxy.js
 
 O app ja tenta usar `http://localhost:8787` automaticamente quando esta em `localhost`.
 
+## Atalho para subir tudo (Windows)
+
+Use o script `dev.ps1` para iniciar o proxy e o servidor web:
+
+```bash
+powershell -ExecutionPolicy Bypass -File dev.ps1
+```
+
+Com API key:
+
+```bash
+powershell -ExecutionPolicy Bypass -File dev.ps1 -ApiKey "SEU_TOKEN"
+```
+
 ## GitHub Pages e CORS
 
 O navegador costuma bloquear chamadas diretas para `https://api.pokemontcg.io` quando o app esta hospedado no GitHub Pages (CORS). Para funcionar, configure um proxy CORS e aponte o app para ele em "Configuracoes" no campo `API Base URL`.
