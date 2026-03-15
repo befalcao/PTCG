@@ -387,7 +387,11 @@
       );
       return [];
     }
-    const url = `${base}/v2/cards?q=${encodeURIComponent(query)}&pageSize=10`;
+    const select =
+      "id,name,number,supertype,subtypes,types,hp,attacks,abilities,rules,weaknesses,resistances,retreatCost,evolvesFrom,regulationMark,set";
+    const url = `${base}/v2/cards?q=${encodeURIComponent(query)}&pageSize=10&select=${encodeURIComponent(
+      select
+    )}`;
     const headers = settings.apiKey ? { "X-Api-Key": settings.apiKey } : {};
     try {
       const response = await fetch(url, { headers });

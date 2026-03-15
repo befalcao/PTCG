@@ -23,11 +23,7 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
 
     def do_GET(self):
         if self.path == "/" or self.path.startswith("/healthz"):
-            self.send_response(200)
-            self._set_cors()
-            self.send_header("Content-Type", "text/plain")
-            self.end_headers()
-            self.wfile.write(b"ok")
+            self._health_check()
             return
         self._proxy()
 
@@ -50,6 +46,7 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
         headers = {k: v for k, v in self.headers.items()}
         if API_KEY and "X-Api-Key" not in headers:
             headers["X-Api-Key"] = API_KEY
+        headers["User-Agent"] = headers.get("User-Agent", "ptcg-tracker-proxy/1.0")
 
         data = None
         if self.command not in ("GET", "HEAD"):
@@ -69,7 +66,8 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
                 self.wfile.write(resp.read())
         except Exception as exc:
             try:
-                print(f"Proxy error: {exc}")
+                has_key = "yes" if API_KEY else "no"
+                print(f"Proxy error: {exc} | key={has_key} | url={target}")
             except Exception:
                 pass
             self.send_response(502)
@@ -77,6 +75,27 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
             self.send_header("Content-Type", "text/plain")
             self.end_headers()
             self.wfile.write(b"Bad Gateway")
+
+    def _health_check(self):
+        try:
+            url = f"{UPSTREAM}/v2/sets?pageSize=1"
+            headers = {}
+            if API_KEY:
+                headers["X-Api-Key"] = API_KEY
+            req = urllib.request.Request(url, headers=headers, method="GET")
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                status = resp.status
+            self.send_response(200 if status == 200 else status)
+            self._set_cors()
+            self.send_header("Content-Type", "text/plain")
+            self.end_headers()
+            self.wfile.write(f"upstream_status={status}".encode("utf-8"))
+        except Exception as exc:
+            self.send_response(502)
+            self._set_cors()
+            self.send_header("Content-Type", "text/plain")
+            self.end_headers()
+            self.wfile.write(f"health_error={exc}".encode("utf-8"))
 
 
 if __name__ == "__main__":
