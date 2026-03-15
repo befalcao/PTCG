@@ -23,6 +23,7 @@ Passos (resumo):
 - Deploy do worker (via Wrangler).
 - (Opcional) `wrangler secret put API_KEY` para guardar a key no worker.
 - No app, setar `API Base URL` para `https://<seu-worker>.workers.dev`.
+- Alternativa rapida: abrir o app com `?apiBase=https://<seu-worker>.workers.dev` para preencher automaticamente.
 
 ## Notas
 

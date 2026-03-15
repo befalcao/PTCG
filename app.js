@@ -53,6 +53,7 @@
   async function init() {
     bindEvents();
     loadSettings();
+    hydrateSettingsFromQuery();
     updateOnlineStatus();
     window.addEventListener("online", updateOnlineStatus);
     window.addEventListener("offline", updateOnlineStatus);
@@ -120,6 +121,24 @@
     localStorage.setItem(ALIAS_KEY, els.aliasMap.value.trim());
     localStorage.setItem(OVERRIDE_KEY, els.overrideMap.value.trim());
     setStatus(els.settingsStatus, "Configuracoes salvas.");
+  }
+
+  function hydrateSettingsFromQuery() {
+    const url = new URL(window.location.href);
+    const apiBase = url.searchParams.get("apiBase");
+    if (!apiBase) return;
+    const settings = readJson(SETTINGS_KEY, {
+      apiKey: "",
+      apiBaseUrl: "",
+      defaultQuality: "NM",
+      defaultLanguage: "PTEN",
+    });
+    if (settings.apiBaseUrl !== apiBase) {
+      settings.apiBaseUrl = apiBase;
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+      els.apiBaseUrl.value = apiBase;
+      setStatus(els.settingsStatus, "API Base URL importada da URL.");
+    }
   }
 
   async function openDb() {
@@ -358,6 +377,13 @@
   async function fetchCardsByQuery(query, statusEl = els.addStatus) {
     const settings = readJson(SETTINGS_KEY, {});
     const base = getApiBaseUrl();
+    if (!settings.apiBaseUrl && location.hostname.endsWith("github.io")) {
+      setStatus(
+        statusEl,
+        "CORS no GitHub Pages: configure API Base URL (ex: seu worker)."
+      );
+      return [];
+    }
     const url = `${base}/v2/cards?q=${encodeURIComponent(query)}&pageSize=10`;
     const headers = settings.apiKey ? { "X-Api-Key": settings.apiKey } : {};
     try {
