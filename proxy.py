@@ -22,6 +22,13 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
+        if self.path == "/" or self.path.startswith("/healthz"):
+            self.send_response(200)
+            self._set_cors()
+            self.send_header("Content-Type", "text/plain")
+            self.end_headers()
+            self.wfile.write(b"ok")
+            return
         self._proxy()
 
     def do_POST(self):
@@ -29,6 +36,13 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
 
     def _proxy(self):
         parsed = urllib.parse.urlsplit(self.path)
+        if not parsed.path.startswith("/v2/"):
+            self.send_response(404)
+            self._set_cors()
+            self.send_header("Content-Type", "text/plain")
+            self.end_headers()
+            self.wfile.write(b"Not Found")
+            return
         target = urllib.parse.urljoin(UPSTREAM, parsed.path)
         if parsed.query:
             target = f"{target}?{parsed.query}"
@@ -53,7 +67,11 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
                 self._set_cors()
                 self.end_headers()
                 self.wfile.write(resp.read())
-        except Exception:
+        except Exception as exc:
+            try:
+                print(f"Proxy error: {exc}")
+            except Exception:
+                pass
             self.send_response(502)
             self._set_cors()
             self.send_header("Content-Type", "text/plain")

@@ -28,6 +28,7 @@ python proxy.py
 ```
 
 O app ja tenta usar `http://localhost:8787` automaticamente quando esta em `localhost`.
+Teste rapido do proxy: abra `http://localhost:8787/healthz` e confirme `ok`.
 
 ## Atalho para subir tudo (Windows)
 
